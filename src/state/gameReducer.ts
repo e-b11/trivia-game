@@ -1,57 +1,78 @@
-type GameState =
+import { type TriviaQuestion } from "../types/trivia";
+
+export type GameState =
   | { status: "idle" }
-  | { status: "loading" }
   | {
       status: "playing";
-      questions: Question[];
-      currentIndex: number;
+      questions: TriviaQuestion[];
+      index: number;
       score: number;
     }
-  | { status: "feedback"; isCorrect: boolean; correctAnswer: string }
+  | {
+      status: "feedback";
+      isCorrect: boolean;
+      correctAnswer: string;
+      index: number;
+      score: number;
+      questions: TriviaQuestion[];
+    }
   | { status: "finished"; score: number; total: number };
 
-function reducer(state: GameState, action: Action): GameState {
+export type Action =
+  | { type: "START"; questions: TriviaQuestion[] }
+  | { type: "ANSWER"; answer: string }
+  | { type: "NEXT" };
+
+export function gameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
     case "START":
-      return { status: "loading" };
-
-    case "SUCCESS":
       return {
         status: "playing",
         questions: action.questions,
-        currentIndex: 0,
+        index: 0,
         score: 0,
       };
 
-    case "ANSWER":
+    case "ANSWER": {
+      if (state.status !== "playing") return state;
+
+      const current = state.questions[state.index];
+      const isCorrect = action.answer === current.correct_answer;
+
       return {
         status: "feedback",
-        isCorrect: action.isCorrect,
-        correctAnswer:
-          state.status === "playing"
-            ? state.questions[state.currentIndex].correct_answer
-            : "",
+        isCorrect,
+        correctAnswer: current.correct_answer,
+        index: state.index,
+        score: isCorrect ? state.score + 1 : state.score,
+        questions: state.questions,
       };
+    }
 
-    case "NEXT":
+    case "NEXT": {
       if (state.status !== "feedback") return state;
 
-      const nextIndex = (state as any).currentIndex + 1; // we'll fix this cleanly later
+      const nextIndex = state.index + 1;
+
+      if (nextIndex >= state.questions.length) {
+        return {
+          status: "finished",
+          score: state.score,
+          total: state.questions.length,
+        };
+      }
 
       return {
-        ...state,
         status: "playing",
-        currentIndex: nextIndex,
+        questions: state.questions,
+        index: nextIndex,
+        score: state.score,
       };
+    }
 
-    case "FINISH":
-      return {
-        status: "finished",
-        score: (state as any).score,
-        total: (state as any).questions.length,
-      };
-
-    default:
-      return state;
+    default: {
+      const _exhaustive: never = action;
+      return _exhaustive;
+    }
   }
 }
