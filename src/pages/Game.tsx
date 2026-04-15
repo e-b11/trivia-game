@@ -11,14 +11,33 @@ export default function Game() {
 
   const [randomValue] = useState(() => Math.random());
 
-  // 🔥 BRIDGE: when data loads → start game
+  //Effect for making sure trivia questions fetched correctly, starting game
   useEffect(() => {
     if (trivia.status === "success") {
       dispatch({ type: "START", questions: trivia.data });
     }
   }, [trivia]);
 
-  // Loading / Error handled separately
+  //effect for ticking the timer
+  useEffect(() => {
+    if (gameState.status !== "playing") return;
+
+    const id = setInterval(() => {
+      dispatch({ type: "TICK" });
+    }, 1000);
+
+    return () => clearInterval(id);
+  }, [gameState.status, gameState.index]);
+
+  //effect for time being up
+  useEffect(() => {
+    if (gameState.status !== "playing") return;
+
+    if (gameState.timeLeft <= 0) {
+      dispatch({ type: "TIME_UP" });
+    }
+  }, [gameState.timeLeft, gameState.status]);
+
   if (trivia.status === "loading") return <p>Loading...</p>;
   if (trivia.status === "error") return <p>{trivia.message}</p>;
 
@@ -41,6 +60,7 @@ export default function Game() {
             dangerouslySetInnerHTML={{ __html: a }}
           />
         ))}
+        <p>⏱️ {gameState.timeLeft}s</p>
       </div>
     );
   }

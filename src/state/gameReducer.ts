@@ -7,6 +7,7 @@ export type GameState =
       questions: TriviaQuestion[];
       index: number;
       score: number;
+      timeLeft: number;
     }
   | {
       status: "feedback";
@@ -21,7 +22,9 @@ export type GameState =
 export type Action =
   | { type: "START"; questions: TriviaQuestion[] }
   | { type: "ANSWER"; answer: string }
-  | { type: "NEXT" };
+  | { type: "NEXT" }
+  | { type: "TICK" }
+  | { type: "TIME_UP" };
 
 export function gameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
@@ -31,7 +34,35 @@ export function gameReducer(state: GameState, action: Action): GameState {
         questions: action.questions,
         index: 0,
         score: 0,
+        timeLeft: 10,
       };
+
+    case "TICK":
+      if (state.status !== "playing") return state;
+
+      if (state.timeLeft < 1) {
+        return state;
+      }
+
+      return {
+        ...state,
+        timeLeft: state.timeLeft - 1,
+      };
+
+    case "TIME_UP": {
+      if (state.status !== "playing") return state;
+
+      const current = state.questions[state.index];
+
+      return {
+        status: "feedback",
+        isCorrect: false,
+        correctAnswer: current.correct_answer,
+        index: state.index,
+        score: state.score,
+        questions: state.questions,
+      };
+    }
 
     case "ANSWER": {
       if (state.status !== "playing") return state;
@@ -67,6 +98,7 @@ export function gameReducer(state: GameState, action: Action): GameState {
         questions: state.questions,
         index: nextIndex,
         score: state.score,
+        timeLeft: 10,
       };
     }
 
