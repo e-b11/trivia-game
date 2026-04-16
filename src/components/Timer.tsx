@@ -1,4 +1,4 @@
-import { Typography, Stack, LinearProgress } from "@mui/material";
+import { Stack, LinearProgress } from "@mui/material";
 
 type TimerProps = {
   timeLeft: number;
@@ -10,7 +10,6 @@ export function Timer({ timeLeft, total }: TimerProps) {
 
   return (
     <Stack spacing={1}>
-      <Typography variant="body2">Time left: {timeLeft}s</Typography>
       <LinearProgress variant="determinate" value={percent} />
     </Stack>
   );

@@ -13,11 +13,7 @@ export default function QuestionCard({ question, answers, onAnswer }: Props) {
         <Stack spacing={3}>
           <Typography variant="h6">{question}</Typography>
 
-          <Stack
-            spacing={2}
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-          >
+          <Stack spacing={2} direction={{ xs: "column", sm: "row" }}>
             {answers.map((a) => (
               <Button
                 key={a}

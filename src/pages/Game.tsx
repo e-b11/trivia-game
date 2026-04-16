@@ -13,6 +13,7 @@ import { Timer } from "../components/Timer";
 import QuestionCard from "../components/QuestionCard";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function Game() {
   const navigate = useNavigate();
@@ -75,15 +76,12 @@ export default function Game() {
         }}
       >
         <Stack spacing={3} sx={{ mt: 4 }}>
-          {/* Timer */}
-          <Timer timeLeft={gameState.timeLeft} total={10} />
-
-          {/* Question */}
           <QuestionCard
             question={q.question}
             answers={answers}
             onAnswer={(a) => dispatch({ type: "ANSWER", answer: a })}
           />
+          <Timer timeLeft={gameState.timeLeft} total={10} />
         </Stack>
       </Box>
     );
@@ -114,21 +112,27 @@ export default function Game() {
 
   if (gameState.status === "finished") {
     return (
-      <Card>
-        <CardContent>
-          <Stack spacing={3} sx={{ alignItems: "center" }}>
-            <Typography variant="h4">Game Over 🎉</Typography>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
+      >
+        <Card>
+          <CardContent>
+            <Stack spacing={3} sx={{ alignItems: "center" }}>
+              <Typography variant="h4">Game Over 🎉</Typography>
 
-            <Typography variant="h6">
-              Score: {gameState.score} / {gameState.total}
-            </Typography>
+              <Typography variant="h6">
+                Score: {gameState.score} / {gameState.total}
+              </Typography>
 
-            <Button variant="contained" onClick={() => navigate("/")}>
-              Play Again
-            </Button>
-          </Stack>
-        </CardContent>
-      </Card>
+              <Button variant="contained" onClick={() => navigate("/")}>
+                Play Again
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+      </motion.div>
     );
   }
 
