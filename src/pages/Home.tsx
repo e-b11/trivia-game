@@ -1,39 +1,86 @@
-import { Box, Typography, Button, Stack } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Stack,
+  FormControl,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const Home = () => {
+export default function Home() {
   const navigate = useNavigate();
+  const [difficulty, setDifficulty] = useState("easy");
+
+  const handleStart = () => {
+    navigate(`/game?difficulty=${difficulty}`);
+  };
 
   return (
-    <Box sx={{ width: "100%", px: 2 }}>
-      <Stack spacing={4} alignitems="center" mt={10}>
+    <Box
+      sx={{
+        width: "100%",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Stack
+        spacing={4}
+        sx={{
+          width: "100%",
+          maxWidth: 400,
+          px: 2,
+          mx: "auto",
+          alignItems: "center",
+        }}
+      >
+        <SportsEsportsIcon sx={{ fontSize: 90 }} />
+
         <Typography
-          variant="h4"
+          variant="h2"
           sx={{
-            fontSize: {
-              xs: "1.5rem",
-              sm: "2rem",
-              md: "2.5rem",
-            },
+            textAlign: "center",
+            color: "#ffffff",
           }}
         >
           Trivia Game
         </Typography>
 
-        <Typography variant="body1" textalign="center">
-          Test your knowledge with timed questions!
-        </Typography>
+        <FormControl fullWidth>
+          <Select
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            sx={{
+              bgcolor: "white",
+              borderRadius: 2,
+            }}
+          >
+            <MenuItem value="easy">Easy</MenuItem>
+            <MenuItem value="medium">Medium</MenuItem>
+            <MenuItem value="hard">Hard</MenuItem>
+          </Select>
+        </FormControl>
 
         <Button
           variant="contained"
-          size="medium"
-          onClick={() => navigate("/game")}
+          onClick={handleStart}
+          sx={{
+            width: "fit-content",
+            px: 5,
+            py: 1.5,
+            fontWeight: "bold",
+            letterSpacing: 1,
+            borderRadius: 3,
+          }}
         >
           Start Game
         </Button>
       </Stack>
     </Box>
   );
-};
-
-export default Home;
+}

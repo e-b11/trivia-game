@@ -11,10 +11,7 @@ export default function QuestionCard({ question, answers, onAnswer }: Props) {
     <Card elevation={3}>
       <CardContent>
         <Stack spacing={3}>
-          <Typography
-            variant="h6"
-            dangerouslySetInnerHTML={{ __html: question }}
-          />
+          <Typography variant="h6">{question}</Typography>
 
           <Stack
             spacing={2}
@@ -28,7 +25,7 @@ export default function QuestionCard({ question, answers, onAnswer }: Props) {
                 onClick={() => onAnswer(a)}
                 fullWidth
               >
-                <span dangerouslySetInnerHTML={{ __html: a }} />
+                {a}
               </Button>
             ))}
           </Stack>

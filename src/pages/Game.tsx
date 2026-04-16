@@ -12,11 +12,14 @@ import {
 import { Timer } from "../components/Timer";
 import QuestionCard from "../components/QuestionCard";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function Game() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const difficulty = params.get("difficulty") || "easy";
 
-  const trivia = useTrivia();
+  const trivia = useTrivia(difficulty);
 
   const [gameState, dispatch] = useReducer(gameReducer, {
     status: "idle",
@@ -40,7 +43,7 @@ export default function Game() {
     }, 1000);
 
     return () => clearInterval(id);
-  }, [gameState.status, gameState.index]);
+  }, [gameState]);
 
   //effect for time being up
   useEffect(() => {
@@ -49,7 +52,7 @@ export default function Game() {
     if (gameState.timeLeft <= 0) {
       dispatch({ type: "TIME_UP" });
     }
-  }, [gameState.timeLeft, gameState.status]);
+  }, [gameState]);
 
   if (trivia.status === "loading") return <p>Loading...</p>;
   if (trivia.status === "error") return <p>{trivia.message}</p>;
@@ -71,7 +74,7 @@ export default function Game() {
           px: 2,
         }}
       >
-        <Stack spacing={3} mt={4}>
+        <Stack spacing={3} sx={{ mt: 4 }}>
           {/* Timer */}
           <Timer timeLeft={gameState.timeLeft} total={10} />
 
@@ -90,7 +93,7 @@ export default function Game() {
     return (
       <Card>
         <CardContent>
-          <Stack spacing={2} alignitems="center">
+          <Stack spacing={3} sx={{ alignItems: "center" }}>
             <Typography variant="h5">
               {gameState.isCorrect ? "✅ Correct!" : "❌ Wrong!"}
             </Typography>
@@ -113,7 +116,7 @@ export default function Game() {
     return (
       <Card>
         <CardContent>
-          <Stack spacing={3} alignitems="center">
+          <Stack spacing={3} sx={{ alignItems: "center" }}>
             <Typography variant="h4">Game Over 🎉</Typography>
 
             <Typography variant="h6">

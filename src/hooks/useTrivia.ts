@@ -3,7 +3,7 @@ import { type AsyncState } from "../types/async";
 import { type TriviaQuestion } from "../types/trivia";
 import { fetchTrivia } from "../api/trivia";
 
-export function useTrivia() {
+export function useTrivia(difficulty: string) {
   const [state, setState] = useState<AsyncState<TriviaQuestion[]>>({
     status: "idle",
   });
@@ -15,7 +15,7 @@ export function useTrivia() {
       setState({ status: "loading" });
 
       try {
-        const data = await fetchTrivia(controller.signal);
+        const data = await fetchTrivia(difficulty, controller.signal);
         setState({ status: "success", data });
       } catch (err) {
         setState({

@@ -1,12 +1,13 @@
 import { isTriviaResponse, type TriviaQuestion } from "../types/trivia";
+import he from "he";
 
 export async function fetchTrivia(
+  difficulty: string,
   signal: AbortSignal,
 ): Promise<TriviaQuestion[]> {
-  const res = await fetch(
-    "https://opentdb.com/api.php?amount=10&type=multiple",
-    { signal },
-  );
+  const url = `https://opentdb.com/api.php?amount=10&type=multiple&difficulty=${difficulty}`;
+
+  const res = await fetch(url, { signal });
 
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
@@ -22,7 +23,12 @@ export async function fetchTrivia(
     throw new Error("Trivia API returned no results");
   }
 
-  return data.results;
+  return data.results.map((q) => ({
+    ...q,
+    question: he.decode(q.question),
+    correct_answer: he.decode(q.correct_answer),
+    incorrect_answers: q.incorrect_answers.map(he.decode),
+  }));
 }
 
 // export async function loadTrivia(
