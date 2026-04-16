@@ -17,4 +17,4 @@ This game uses the Open Trivia Database API to fetch a list of questions for the
 
 ## Additional Features
 
-The application uses a custom hook to fetch the trivia date and uses Material UI components/icons for styling. 
+The application uses a custom hook to fetch the trivia data and uses Material UI components/icons for styling. 
