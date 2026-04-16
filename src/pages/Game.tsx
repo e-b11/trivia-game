@@ -1,6 +1,16 @@
 import { useEffect, useReducer, useState } from "react";
 import { useTrivia } from "../hooks/useTrivia";
 import { gameReducer } from "../state/gameReducer";
+import {
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Stack,
+} from "@mui/material";
+import { Timer } from "../components/Timer";
+import QuestionCard from "../components/QuestionCard";
 
 export default function Game() {
   const trivia = useTrivia();
@@ -50,39 +60,62 @@ export default function Game() {
     );
 
     return (
-      <div>
-        <h2 dangerouslySetInnerHTML={{ __html: q.question }} />
+      <Container maxWidth="sm">
+        <Stack spacing={3} mt={4}>
+          {/* Timer */}
+          <Timer timeLeft={gameState.timeLeft} total={10} />
 
-        {answers.map((a) => (
-          <button
-            key={a}
-            onClick={() => dispatch({ type: "ANSWER", answer: a })}
-            dangerouslySetInnerHTML={{ __html: a }}
+          {/* Question */}
+          <QuestionCard
+            question={q.question}
+            answers={answers}
+            onAnswer={(a) => dispatch({ type: "ANSWER", answer: a })}
           />
-        ))}
-        <p>⏱️ {gameState.timeLeft}s</p>
-      </div>
+        </Stack>
+      </Container>
     );
   }
 
   if (gameState.status === "feedback") {
     return (
-      <div>
-        <h2>{gameState.isCorrect ? "✅ Correct!" : "❌ Wrong!"}</h2>
-        <p>{gameState.correctAnswer}</p>
+      <Card>
+        <CardContent>
+          <Stack spacing={2} alignitems="center">
+            <Typography variant="h5">
+              {gameState.isCorrect ? "✅ Correct!" : "❌ Wrong!"}
+            </Typography>
 
-        <button onClick={() => dispatch({ type: "NEXT" })}>Next</button>
-      </div>
+            <Typography>Correct Answer: {gameState.correctAnswer}</Typography>
+
+            <Button
+              variant="contained"
+              onClick={() => dispatch({ type: "NEXT" })}
+            >
+              Next Question
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
     );
   }
 
   if (gameState.status === "finished") {
     return (
-      <div>
-        <h2>
-          Score: {gameState.score} / {gameState.total}
-        </h2>
-      </div>
+      <Card>
+        <CardContent>
+          <Stack spacing={3} alignitems="center">
+            <Typography variant="h4">Game Over 🎉</Typography>
+
+            <Typography variant="h6">
+              Score: {gameState.score} / {gameState.total}
+            </Typography>
+
+            <Button variant="contained" onClick={() => navigate("/")}>
+              Play Again
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
     );
   }
 

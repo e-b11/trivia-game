@@ -1,30 +1,17 @@
-import { useEffect, useState } from "react";
+import { Typography, Stack, LinearProgress } from "@mui/material";
 
-const Timer = () => {
-  const [timeLeft, setTimeLeft] = useState(10);
-
-  useEffect(() => {
-    if (state.status !== "playing") return;
-
-    setTimeLeft(10);
-
-    const interval = setInterval(() => {
-      setTimeLeft((t) => {
-        if (t <= 1) {
-          clearInterval(interval);
-          dispatch({ type: "ANSWER", isCorrect: false });
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [state.status, state.currentIndex]);
-
-  export default function Timer() {
-    <p>⏱️ {timeLeft}s</p>;
-  }
+type TimerProps = {
+  timeLeft: number;
+  total: number;
 };
 
-export default Timer;
+export function Timer({ timeLeft, total }: TimerProps) {
+  const percent = (timeLeft / total) * 100;
+
+  return (
+    <Stack spacing={1}>
+      <Typography variant="body2">Time left: {timeLeft}s</Typography>
+      <LinearProgress variant="determinate" value={percent} />
+    </Stack>
+  );
+}
