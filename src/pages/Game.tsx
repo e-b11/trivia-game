@@ -2,7 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import { useTrivia } from "../hooks/useTrivia";
 import { gameReducer } from "../state/gameReducer";
 import {
-  Container,
+  Box,
   Card,
   CardContent,
   Typography,
@@ -11,8 +11,11 @@ import {
 } from "@mui/material";
 import { Timer } from "../components/Timer";
 import QuestionCard from "../components/QuestionCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Game() {
+  const navigate = useNavigate();
+
   const trivia = useTrivia();
 
   const [gameState, dispatch] = useReducer(gameReducer, {
@@ -60,7 +63,14 @@ export default function Game() {
     );
 
     return (
-      <Container maxWidth="sm">
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+          mx: "auto",
+          px: 2,
+        }}
+      >
         <Stack spacing={3} mt={4}>
           {/* Timer */}
           <Timer timeLeft={gameState.timeLeft} total={10} />
@@ -72,7 +82,7 @@ export default function Game() {
             onAnswer={(a) => dispatch({ type: "ANSWER", answer: a })}
           />
         </Stack>
-      </Container>
+      </Box>
     );
   }
 

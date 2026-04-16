@@ -1,11 +1,11 @@
-import { Container, Typography, Button, Stack } from "@mui/material";
+import { Box, Typography, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth="sm">
+    <Box sx={{ width: "100%", px: 2 }}>
       <Stack spacing={4} alignitems="center" mt={10}>
         <Typography
           variant="h4"
@@ -26,13 +26,13 @@ const Home = () => {
 
         <Button
           variant="contained"
-          size="large"
+          size="medium"
           onClick={() => navigate("/game")}
         >
           Start Game
         </Button>
       </Stack>
-    </Container>
+    </Box>
   );
 };
 
